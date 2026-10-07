@@ -1,0 +1,40 @@
+{
+  "name": "@mnemosyne-plugins/mnemo-marks",
+  "displayName": "MnemoMarks",
+  "version": "0.2.0",
+  "category": "Memory",
+  "vendor": "Mnemosyne Labs",
+  "license": "MIT",
+  "description": "Trademark registers on this computer. Keep public trademark registers on this computer and check a list of names against them in one go: IP Australia's register downloads with no account (about 440 MB, the size shown first), and the USPTO connects with your own key, sealed on this computer. A search is not legal advice.",
+  "descriptionI18n": {
+    "en": "Trademark registers on this computer. Keep public trademark registers on this computer and check a list of names against them in one go: IP Australia's register downloads with no account (about 440 MB, the size shown first), and the USPTO connects with your own key, sealed on this computer. A search is not legal advice.",
+    "fr": "Les registres de marques sur cet ordinateur. Garde des registres publics de marques sur cet ordinateur et vérifie une liste de noms en une fois : le registre d'IP Australia se télécharge sans compte (environ 440 Mo, la taille affichée avant), et l'USPTO se connecte avec ta propre clé, scellée sur cet ordinateur. Une recherche n'est pas un avis juridique.",
+    "es": "Los registros de marcas en este ordenador. Guarda registros públicos de marcas en este ordenador y comprueba una lista de nombres de una vez: el registro de IP Australia se descarga sin cuenta (unos 440 MB, el tamaño se muestra antes) y la USPTO se conecta con tu propia clave, sellada en este ordenador. Una búsqueda no es un consejo jurídico."
+  },
+  "keywords": [
+    "trademark",
+    "marks",
+    "uspto",
+    "brand",
+    "naming",
+    "clearance"
+  ],
+  "permissions": [
+    "marks:registry",
+    "marks:mirror"
+  ],
+  "updateStrategy": "git",
+  "entrypoints": {
+    "renderer": "index.html"
+  },
+  "widgets": [
+    {
+      "id": "mnemo-marks-main",
+      "icon": "™️",
+      "name": "MnemoMarks",
+      "route": "index.html",
+      "defaultWidth": 760,
+      "defaultHeight": 720
+    }
+  ]
+}

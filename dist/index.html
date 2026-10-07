@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MnemoMarks</title>
+    <style>
+      html, body, #root {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        background-color: var(--bg-void, #050505);
+        color: var(--text-primary, #e0e0e0);
+      }
+      button { transition: filter .15s ease, transform .1s ease, box-shadow .15s ease; font: inherit; }
+      button:not(:disabled):hover { filter: brightness(1.15); }
+      button:not(:disabled):active { transform: translateY(1px); }
+      button:disabled { opacity: .45; cursor: default; }
+      button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+      /* ── Page layout (App.tsx): the page scrolls as a whole by default. ── */
+      .mm-page { height: 100%; box-sizing: border-box; padding: 16px; display: flex; flex-direction: column; gap: 12px; overflow: auto; background: var(--bg-void); color: var(--text-primary); }
+      .mm-main { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-start; }
+      .mm-tiles { flex: 1 1 260px; max-width: 380px; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+      .mm-detail { flex: 2 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 12px; }
+      /* Wide and tall enough: the header stays put, each column scrolls on its own. */
+      @media (min-width: 760px) and (min-height: 520px) {
+        .mm-page { overflow: hidden; }
+        .mm-main { flex: 1; min-height: 0; flex-wrap: nowrap; align-items: stretch; }
+        .mm-tiles, .mm-detail { overflow-y: auto; overscroll-behavior: contain; padding: 2px 6px 8px 2px; }
+        .mm-search { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 2px 6px 8px 2px; }
+        .mm-foot { flex-shrink: 0; }
+      }
+      /* Narrow windows stack the columns: the tiles then take the full width. */
+      @media (max-width: 759px) { .mm-tiles { max-width: none; } }
+      /* Short windows: tighter tiles; the subtitle, the legend and the notes step aside. */
+      @media (max-height: 720px) {
+        .mm-page { padding: 10px 12px; gap: 8px; }
+        .mm-tile { padding: 10px 12px !important; gap: 5px !important; }
+        .mm-hide-short { display: none !important; }
+      }
+      /* ── Scrollbars: thin, rounded, on the shell's tokens; lit by the accent on hover. ── */
+      ::-webkit-scrollbar { width: 10px; height: 10px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background-color: color-mix(in srgb, var(--text-primary) 18%, transparent); border-radius: 999px; border: 3px solid transparent; background-clip: padding-box; }
+      ::-webkit-scrollbar-thumb:hover { background-color: color-mix(in srgb, var(--accent) 60%, transparent); }
+      ::-webkit-scrollbar-thumb:active { background-color: var(--accent); }
+      ::-webkit-scrollbar-corner { background: transparent; }
+      /* One mark per row, columns aligned (number, mark, status, classes, holder). */
+      .mm-hit { display: grid; grid-template-columns: 96px minmax(120px, 1.3fr) minmax(130px, auto) minmax(70px, .6fr) minmax(0, 1.4fr); gap: 12px; align-items: center;
+        width: 100%; box-sizing: border-box; padding: 6px 8px; border-radius: 8px; border: 1px solid transparent; background: transparent;
+        font: inherit; font-size: 13px; color: var(--text-primary); text-align: left; }
+      .mm-hit > span { min-width: 0; }
+      .mm-hit-head { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .04em; padding-top: 2px; padding-bottom: 2px; }
+      .mm-hit-link { cursor: pointer; transition: background .12s ease, border-color .12s ease; }
+      .mm-hit-link:hover, .mm-hit-link:focus-visible { background: color-mix(in srgb, var(--accent) 9%, transparent); border-color: color-mix(in srgb, var(--accent) 30%, transparent); outline: none; }
+      .mm-verdict:hover { filter: brightness(1.2); }
+      @media (max-width: 640px) {
+        .mm-hit { grid-template-columns: 84px 1fr; row-gap: 4px; }
+        .mm-hit-head { display: none; }
+      }
+      .mm-trash:hover { color: var(--danger) !important; border-color: color-mix(in srgb, var(--danger) 50%, transparent) !important; }
+      .mm-tile:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--accent) 45%, transparent) !important; }
+      @media (prefers-reduced-motion: reduce) { button, .mm-tile { transition: none; } .mm-tile:hover, button:active { transform: none; } }
+    </style>
+    <script type="module" crossorigin src="./assets/index-DgZpA_bC.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
