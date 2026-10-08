@@ -1,6 +1,6 @@
 {
   "name": "@mnemosyne-plugins/mnemo-marks",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "type": "module",
   "description": "Trademark registers on this computer: MnemoMarks keeps the public trademark data of the offices you connect, with your own key for each, so a list of names can be checked in one go.",

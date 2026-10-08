@@ -1,8 +1,9 @@
 {
   "name": "@mnemosyne-plugins/mnemo-marks",
   "displayName": "MnemoMarks",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "category": "Memory",
+  "icon": "icon.svg",
   "vendor": "Mnemosyne Labs",
   "license": "MIT",
   "description": "Trademark registers on this computer. Keep public trademark registers on this computer and check a list of names against them in one go: IP Australia's register downloads with no account (about 440 MB, the size shown first), and the USPTO connects with your own key, sealed on this computer. A search is not legal advice.",
