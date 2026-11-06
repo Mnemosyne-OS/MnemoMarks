@@ -6,8 +6,8 @@ import { MnemoCartridgeSDK } from '../sdk/mnemo-sdk';
 import type { KeyState, Verify } from './onboarding';
 import type { MirrorPlan, RegisterState, SearchAnswer } from './register';
 
-// Must match "name" in mnemo-plugin.json.
-const sdk = new MnemoCartridgeSDK('@mnemosyne-plugins/mnemo-marks');
+// Must match "name" in mnemo-plugin.json. Exported for the agent actions (doc 149).
+export const sdk =new MnemoCartridgeSDK('@mnemosyne-plugins/mnemo-marks');
 
 /** A local IPC: the house default (rule 9). */
 const HOST_TIMEOUT_MS = 15_000;

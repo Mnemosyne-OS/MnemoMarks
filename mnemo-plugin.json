@@ -1,7 +1,7 @@
 {
   "name": "@mnemosyne-plugins/mnemo-marks",
   "displayName": "MnemoMarks",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "category": "Memory",
   "icon": "icon.svg",
   "vendor": "Mnemosyne Labs",
@@ -24,10 +24,122 @@
     "marks:registry",
     "marks:mirror"
   ],
+  "repository": "https://github.com/Mnemosyne-OS/MnemoMarks",
   "updateStrategy": "git",
   "entrypoints": {
     "renderer": "index.html"
   },
+  "agentActions": [
+    {
+      "id": "registers",
+      "summary": "Say which trademark registers are on this computer, how many marks each holds, and as of which date",
+      "details": "One line per office (ipau = Australia, cipo = Canada, inpi = France, prv = Sweden): register on this computer or none, marks, the day its data is true for, days since download, and phase (downloading, indexing) while one runs. The USPTO is reached with the person's own key: connected or not.",
+      "effect": "read"
+    },
+    {
+      "id": "checkNames",
+      "summary": "Check a list of names against every trademark register on this computer, as the Check button does",
+      "details": "The names replace what is in the search field and the answer is drawn on screen. Per name and register: verdict (taken = a live mark is the name; close = a live mark is inside it or contains it; clear = nothing live in this register; unknown = a match whose status the register does not say) and the first marks behind it. An office with no register is listed in notRead, never read as clear. A check can take up to two minutes: after a TIMEOUT call lastCheck rather than checking again. Never legal advice.",
+      "effect": "write",
+      "params": {
+        "names": {
+          "type": "list",
+          "description": "The names to check, one per item (a brand, a product name)",
+          "maxItems": 50
+        }
+      },
+      "required": [
+        "names"
+      ]
+    },
+    {
+      "id": "lastCheck",
+      "summary": "Read the answer of the last check shown on screen, or say it is still running",
+      "effect": "read"
+    },
+    {
+      "id": "showOffice",
+      "summary": "Show one office's register card, as a click on its tile does",
+      "details": "The office as the person says it: its id (ipau, cipo, inpi, prv, uspto), its code (AU, CA, FR, SE, US), its name (IP Australia, INPI, USPTO) or its country in French, English or Spanish (« France », « le registre australien », « Estados Unidos »).",
+      "effect": "write",
+      "params": {
+        "office": {
+          "type": "string",
+          "description": "The office: id, code, name or country, as the person says it",
+          "maxLength": 60
+        }
+      },
+      "required": [
+        "office"
+      ]
+    },
+    {
+      "id": "showTab",
+      "summary": "Show the search tab (the names field and the last answer) or the registers tab (the office tiles), as the person's tab does",
+      "effect": "write",
+      "params": {
+        "tab": {
+          "type": "string",
+          "description": "search or registers",
+          "enum": [
+            "search",
+            "registers"
+          ]
+        }
+      },
+      "required": [
+        "tab"
+      ]
+    },
+    {
+      "id": "showResult",
+      "summary": "Scroll the last answer to one checked name's card, as a click on its verdict in the summary does",
+      "details": "The name as the person says it, among the names of the last check. Without office, its first card; with office (id, code, name or country), its card in that register.",
+      "effect": "write",
+      "params": {
+        "name": {
+          "type": "string",
+          "description": "A name of the last check, as the person says it",
+          "maxLength": 120
+        },
+        "office": {
+          "type": "string",
+          "description": "Optional: the register, as the person says it",
+          "maxLength": 60
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    {
+      "id": "openMark",
+      "summary": "Open one mark of the last answer on its office's own website, as a click on its row does",
+      "details": "The mark by its text (« NOZIRIS ») or its number, among the marks the last check shows; office narrows it to one register. The page opens in the person's browser.",
+      "effect": "write",
+      "params": {
+        "mark": {
+          "type": "string",
+          "description": "The mark's text or number",
+          "maxLength": 120
+        },
+        "office": {
+          "type": "string",
+          "description": "Optional: the register, as the person says it",
+          "maxLength": 60
+        }
+      },
+      "required": [
+        "mark"
+      ]
+    }
+  ],
+  "agentGuide": [
+    "Name an office, a checked name or a mark the way the person says it (« France », « le registre australien », « Noziris »): MnemoMarks finds it by its words. Several matches are refused with their names (AMBIGUOUS): pick one and call again.",
+    "To check names: checkNames with the names the person says, one per item. It draws the answer on screen; after a TIMEOUT call lastCheck rather than checking again.",
+    "To look at something: showTab for a tab, showOffice for one office's card, showResult for one checked name's card in the last answer, openMark for a mark's page on its office's website.",
+    "Downloading or removing a register, and the USPTO key, stay with the person: say where the button is."
+  ],
   "widgets": [
     {
       "id": "mnemo-marks-main",
@@ -37,5 +149,34 @@
       "defaultWidth": 760,
       "defaultHeight": 720
     }
-  ]
+  ],
+  "voiceCommands": {
+    "fr": [
+      "vérifie Noziris et Nova",
+      "montre le registre français",
+      "montre les registres",
+      "montre la recherche",
+      "quels registres sont sur cet ordinateur",
+      "montre le résultat de Noziris en Australie",
+      "ouvre la marque NOZIRIS"
+    ],
+    "en": [
+      "check Noziris and Nova",
+      "show the French register",
+      "show the registers",
+      "show the search",
+      "which registers are on this computer",
+      "show the Noziris result in Australia",
+      "open the mark NOZIRIS"
+    ],
+    "es": [
+      "comprueba Noziris y Nova",
+      "muestra el registro francés",
+      "muestra los registros",
+      "muestra la búsqueda",
+      "qué registros hay en este ordenador",
+      "muestra el resultado de Noziris en Australia",
+      "abre la marca NOZIRIS"
+    ]
+  }
 }

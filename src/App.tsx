@@ -14,6 +14,7 @@ import { OfficeTile, TrashIcon, type RemoveControl, type TileState } from './ui/
 import { RegisterCard } from './ui/RegisterCard';
 import { SearchPanel, type Coverage } from './ui/SearchPanel';
 import { UsptoSetup } from './ui/UsptoSetup';
+import { MarksAgentActions } from './ui/MarksAgentActions';
 
 type OfficeId = 'ipau' | 'cipo' | 'inpi' | 'prv' | 'uspto';
 
@@ -171,6 +172,15 @@ export default function App({ host = sdkHost }: { host?: Host }) {
       </div>
 
       <footer className="mm-foot" style={S.footer}><div style={S.small}>{t('footer.source')}</div></footer>
+
+      {/* What an agent may do here (doc 149): the same tab, tile and check the person uses. */}
+      <MarksAgentActions
+        registers={{ ipau: au, cipo: ca, inpi: fr, prv: se }}
+        usConnected={usConnected}
+        showSearch={() => setTab('search')}
+        showRegisters={() => setTab('registers')}
+        showOffice={(id) => { setTab('registers'); setOffice(id); }}
+      />
     </div>
   );
 }

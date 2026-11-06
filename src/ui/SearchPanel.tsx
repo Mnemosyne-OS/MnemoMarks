@@ -6,6 +6,7 @@
 import { useRef, useEffect, useState } from 'react';
 import type { Key } from '../i18n/strings';
 import type { Host } from '../lib/host';
+import { searchControl } from '../lib/marksAgent';
 import { RECORD_URL, classFacets, dataDay, filterHits, formatDay, parseNames, statusWord, verdictOf, type Hit, type HitFilter, type NameResult, type SearchAnswer, type Verdict } from '../lib/register';
 import { S, T as TL } from './styles';
 import { StatePill, type TileState } from './OfficeTile';
@@ -25,15 +26,30 @@ export function SearchPanel({ host, t, lang, ready, coverage, onGoRegisters }: {
   const [answer, setAnswer] = useState<SearchAnswer | null>(null);
   const [error, setError] = useState<string | null>(null);
   const alive = useRef(true);
-  useEffect(() => { alive.current = true; return () => { alive.current = false; }; }, []);
+  // The panel's controls for an agent (doc 149) are withdrawn with the panel.
+  useEffect(() => { alive.current = true; return () => { alive.current = false; searchControl.current = null; }; }, []);
   const names = parseNames(text);
 
-  const run = async () => {
+  /** The « Check » button's run, also the agent's: an answer, or the reason it failed (shown on screen too). */
+  const run = async (list: string[] = names): Promise<{ answer: SearchAnswer } | { why: string }> => {
     setBusy(true); setError(null);
-    try { const a = await host.search(names); if (alive.current) setAnswer(a); } catch (err) {
+    try { const a = await host.search(list); if (alive.current) setAnswer(a); return { answer: a }; } catch (err) {
       console.error('[mnemo-marks] search failed', err);
-      if (alive.current) setError(t('err.other', { why: err instanceof Error ? err.message : String(err) }));
+      const why = err instanceof Error ? err.message : String(err);
+      if (alive.current) setError(t('err.other', { why }));
+      return { why };
     } finally { if (alive.current) setBusy(false); }
+  };
+  searchControl.current = {
+    ready, busy, answer, error,
+    check: async (list) => {
+      setText(list.join('\n'));
+      const r = await run(list);
+      if ('why' in r) throw new Error(`SEARCH_FAILED: ${r.why}`);
+      return r.answer;
+    },
+    showCard: scrollToCard,
+    openRecord: async (url) => { await host.openExternal(url); },
   };
   const open = (url: string) => { host.openExternal(url).catch((err) => console.error('[mnemo-marks] openExternal failed', err)); };
   const office = (id: string) => (OFFICE[id] ? t(OFFICE[id]!) : id);
@@ -92,6 +108,14 @@ export function SearchPanel({ host, t, lang, ready, coverage, onGoRegisters }: {
 /** The anchor id of one name's card in one register, so the summary can jump to it. */
 const cardId = (registry: string, name: string) => `mm-card-${registry}-${encodeURIComponent(name)}`;
 
+/** Scrolls to one name's card in one register (a summary cell's click, and the agent's); false when it is not drawn. */
+function scrollToCard(registry: string, name: string): boolean {
+  const el = document.getElementById(cardId(registry, name));
+  if (!el) return false;
+  el.scrollIntoView?.({ behavior: 'smooth', block: 'start' });
+  return true;
+}
+
 /** Every name × every register read, one verdict per cell; a cell scrolls to its card. */
 function Summary({ answer, t, office }: { answer: SearchAnswer; t: Tr; office: (id: string) => string }) {
   const names = [...new Set(answer.registers.flatMap((reg) => reg.results.map((r) => r.name)))];
@@ -116,7 +140,7 @@ function Summary({ answer, t, office }: { answer: SearchAnswer; t: Tr; office: (
                   <td key={reg.registry} style={TL.summaryCell}>
                     <button className="mm-verdict" style={{ ...TL[VERDICT_PILL[v]], cursor: 'pointer' }} data-verdict={v}
                       title={t('summary.jump', { name, office: office(reg.registry) })}
-                      onClick={() => document.getElementById(cardId(reg.registry, name))?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>
+                      onClick={() => scrollToCard(reg.registry, name)}>
                       {t(`verdict.${v}` as Key)}
                     </button>
                   </td>
